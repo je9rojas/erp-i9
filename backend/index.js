@@ -34,9 +34,17 @@ app.get('/purchases', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/public/purchases.html'));
 });
 
-// Rutas de la API para compras
+// Rutas de la API
+
+// Cargar rutas para compras
 const purchasesRoutes = require('./routes/purchases');
 app.use('/api/purchases', purchasesRoutes);
+
+// Cargar rutas para proveedores
+const suppliersRoutes = require('./routes/suppliers'); // Asegúrate de crear este archivo en "routes"
+app.use('/api/suppliers', suppliersRoutes); // Todas las rutas relacionadas con suppliers estarán en este endpoint
+
+
 
 // Iniciar el servidor
 app.listen(PORT, () => {
