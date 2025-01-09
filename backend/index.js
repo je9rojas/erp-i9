@@ -1,30 +1,44 @@
-// Ruta: backend/index.js
+// Ruta: erp-i9/backend/index.js
 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 
-// Load environment variables
+// Cargar variables de entorno
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB Atlas
+// Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('Connected to MongoDB Atlas'))
-.catch((error) => console.error('Error connecting to MongoDB Atlas:', error));
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((error) => console.error('Error connecting to MongoDB Atlas:', error));
 
-// Import routes
+// Servir archivos estáticos desde el frontend
+app.use(express.static(path.join(__dirname, '../frontend/public')));
+
+// Ruta principal: Página de inicio
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+});
+
+// Ruta para el formulario de compras
+app.get('/purchases', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/purchases.html'));
+});
+
+// Rutas de la API para compras
 const purchasesRoutes = require('./routes/purchases');
-app.use('/purchases', purchasesRoutes);
+app.use('/api/purchases', purchasesRoutes);
 
-// Start the server
+// Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
